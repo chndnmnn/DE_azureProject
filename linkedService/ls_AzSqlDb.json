@@ -1,0 +1,23 @@
+{
+	"name": "ls_AzSqlDb",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"server": "dbserver0azureproject.database.windows.net",
+			"database": "db0azureProject",
+			"encrypt": "mandatory",
+			"trustServerCertificate": true,
+			"authenticationType": "SQL",
+			"userName": "azureproject",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "ls_akv",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "AzSqlDbPassword"
+			}
+		}
+	}
+}
