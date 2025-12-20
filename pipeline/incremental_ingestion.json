@@ -11,6 +11,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "setCurrentDate",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"policy": {
@@ -31,12 +37,44 @@
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
-					"enableStaging": false
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
 				},
 				"inputs": [
 					{
 						"referenceName": "ds_AzSqlDB",
 						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_parquet_dynamic",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "azureproject",
+							"layer": "bronze",
+							"parqPath": "azSqlDB",
+							"parqFile": {
+								"value": "@concat(pipeline().parameters.db_table,'_',variables('currentDate'))",
+								"type": "Expression"
+							}
+						}
 					}
 				]
 			},
@@ -69,7 +107,8 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"container": "azureproject",
-							"jsonPath": "bronze/cdc",
+							"layer": "bronze",
+							"jsonPath": "cdc",
 							"jsonFile": "cdc.json"
 						}
 					},
@@ -101,6 +140,23 @@
 						"type": "DatasetReference"
 					}
 				}
+			},
+			{
+				"name": "setCurrentDate",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "currentDate",
+					"value": {
+						"value": "@formatDateTime(utcNow(), 'yyyyMMdd')",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -112,6 +168,11 @@
 			},
 			"db_col": {
 				"type": "string"
+			}
+		},
+		"variables": {
+			"currentDate": {
+				"type": "String"
 			}
 		},
 		"annotations": []
