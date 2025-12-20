@@ -1,0 +1,22 @@
+{
+	"name": "Json1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_demo",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "dumb.json",
+				"folderPath": "watermark",
+				"fileSystem": "metadata"
+			}
+		},
+		"schema": {
+			"type": "object"
+		}
+	}
+}
