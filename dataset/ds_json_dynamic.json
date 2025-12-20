@@ -9,13 +9,13 @@
 			"container": {
 				"type": "string"
 			},
+			"layer": {
+				"type": "string"
+			},
 			"jsonPath": {
 				"type": "string"
 			},
 			"jsonFile": {
-				"type": "string"
-			},
-			"layer": {
 				"type": "string"
 			}
 		},
