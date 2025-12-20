@@ -29,7 +29,7 @@
 					"type": "Expression"
 				},
 				"folderPath": {
-					"value": "@{dataset().layer}/{dataset().jsonPath}",
+					"value": "@{dataset().layer}/@{dataset().jsonPath}",
 					"type": "Expression"
 				},
 				"fileSystem": {
