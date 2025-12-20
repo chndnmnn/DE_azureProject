@@ -1,0 +1,44 @@
+{
+	"name": "ds_parquet_dynamic",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_adls",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"container": {
+				"type": "string"
+			},
+			"layer": {
+				"type": "string"
+			},
+			"parqPath": {
+				"type": "string"
+			},
+			"parqFile": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().parqFile",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@{dataset().layer}/@{dataset().parqPath}",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().container",
+					"type": "Expression"
+				}
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
