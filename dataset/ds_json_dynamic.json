@@ -14,6 +14,9 @@
 			},
 			"jsonFile": {
 				"type": "string"
+			},
+			"layer": {
+				"type": "string"
 			}
 		},
 		"annotations": [],
@@ -26,7 +29,7 @@
 					"type": "Expression"
 				},
 				"folderPath": {
-					"value": "@dataset().jsonPath",
+					"value": "@{dataset().layer}/{dataset().jsonPath}",
 					"type": "Expression"
 				},
 				"fileSystem": {
