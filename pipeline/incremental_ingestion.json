@@ -124,7 +124,7 @@
 								"type": "Expression"
 							},
 							"jsonPath": {
-								"value": "@concat(pipeline().parameters.source,'/',pipeline().parameters.db_table,pipeline().parameters.db_table,'CDC')",
+								"value": "@concat(pipeline().parameters.source,'/',pipeline().parameters.db_table,'/',pipeline().parameters.db_table,'CDC')",
 								"type": "Expression"
 							},
 							"jsonFile": "cdc.json"
@@ -251,7 +251,7 @@
 								"type": "Expression"
 							},
 							"jsonPath": {
-								"value": "@concat(pipeline().parameters.source,'/',pipeline().parameters.db_table,pipeline().parameters.db_table,'CDC')",
+								"value": "@concat(pipeline().parameters.source,'/',pipeline().parameters.db_table,'/',pipeline().parameters.db_table,'CDC')",
 								"type": "Expression"
 							},
 							"jsonFile": "empty.json"
@@ -272,7 +272,7 @@
 								"type": "Expression"
 							},
 							"jsonPath": {
-								"value": "@concat(pipeline().parameters.source,'/',pipeline().parameters.db_table,pipeline().parameters.db_table,'CDC')",
+								"value": "@concat(pipeline().parameters.source,'/',pipeline().parameters.db_table,'/',pipeline().parameters.db_table,'CDC')",
 								"type": "Expression"
 							},
 							"jsonFile": "cdc.json"
@@ -283,22 +283,28 @@
 		],
 		"parameters": {
 			"db_schema": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "dbo"
 			},
 			"db_table": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "DimUser"
 			},
 			"db_col": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "updated_at"
 			},
 			"container": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "azureproject"
 			},
 			"layer": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "bronze"
 			},
 			"source": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "azSqlDB"
 			}
 		},
 		"variables": {
