@@ -13,7 +13,7 @@
 						]
 					},
 					{
-						"activity": "SetFromDate",
+						"activity": "Is_cdcOrBackDateLoad",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -86,23 +86,6 @@
 						}
 					}
 				]
-			},
-			{
-				"name": "setCurrentDate",
-				"type": "SetVariable",
-				"dependsOn": [],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "currentDate",
-					"value": {
-						"value": "@formatDateTime(utcNow(), 'yyyyMMddHHmmss')",
-						"type": "Expression"
-					}
-				}
 			},
 			{
 				"name": "IsDataLoaded",
@@ -387,71 +370,121 @@
 				}
 			},
 			{
-				"name": "GetCDC",
-				"type": "Lookup",
+				"name": "Is_cdcOrBackDateLoad",
+				"type": "IfCondition",
 				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "JsonSource",
-						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
+					"expression": {
+						"value": "@empty(pipeline().parameters.fromDate)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "SetFromDateFalse",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fromDate",
+								"value": {
+									"value": "@pipeline().parameters.fromDate",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "GetCDC",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "JsonSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "JsonReadSettings"
+									}
+								},
+								"dataset": {
+									"referenceName": "ds_json_dynamic",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "@pipeline().parameters.container",
+											"type": "Expression"
+										},
+										"layer": {
+											"value": "@pipeline().parameters.layer",
+											"type": "Expression"
+										},
+										"jsonPath": {
+											"value": "@concat(pipeline().parameters.source,'/',pipeline().parameters.db_table,'/',pipeline().parameters.db_table,'CDC')",
+											"type": "Expression"
+										},
+										"jsonFile": "cdc.json"
+									}
+								},
+								"firstRowOnly": false
+							}
 						},
-						"formatSettings": {
-							"type": "JsonReadSettings"
+						{
+							"name": "SetFromDateTrue",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "GetCDC",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fromDate",
+								"value": {
+									"value": "@activity('GetCDC').output.value[0].last_load_date",
+									"type": "Expression"
+								}
+							}
 						}
-					},
-					"dataset": {
-						"referenceName": "ds_json_dynamic",
-						"type": "DatasetReference",
-						"parameters": {
-							"container": {
-								"value": "@pipeline().parameters.container",
-								"type": "Expression"
-							},
-							"layer": {
-								"value": "@pipeline().parameters.layer",
-								"type": "Expression"
-							},
-							"jsonPath": {
-								"value": "@concat(pipeline().parameters.source,'/',pipeline().parameters.db_table,'/',pipeline().parameters.db_table,'CDC')",
-								"type": "Expression"
-							},
-							"jsonFile": "cdc.json"
-						}
-					},
-					"firstRowOnly": false
+					]
 				}
 			},
 			{
-				"name": "SetFromDate",
+				"name": "setCurrentDate",
 				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "GetCDC",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"secureOutput": false,
 					"secureInput": false
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "fromDate",
+					"variableName": "currentDate",
 					"value": {
-						"value": "@if(empty(pipeline().parameters.fromDate),activity('GetCDC').output.value[0].last_load_date,pipeline().parameters.fromDate)",
+						"value": "@formatDateTime(utcNow(), 'yyyyMMddHHmmss')",
 						"type": "Expression"
 					}
 				}
