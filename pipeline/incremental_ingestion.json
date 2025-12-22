@@ -261,7 +261,22 @@
 				"outputs": [
 					{
 						"referenceName": "ds_json_dynamic",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"container": {
+								"value": "@pipeline().parameters.container",
+								"type": "Expression"
+							},
+							"layer": {
+								"value": "@pipeline().parameters.layer",
+								"type": "Expression"
+							},
+							"jsonPath": {
+								"value": "@concat(pipeline().parameters.source,'/',pipeline().parameters.db_table,pipeline().parameters.db_table,'CDC')",
+								"type": "Expression"
+							},
+							"jsonFile": "cdc.json"
+						}
 					}
 				]
 			}
