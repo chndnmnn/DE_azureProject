@@ -212,7 +212,7 @@
 							{
 								"name": "last_load_date",
 								"value": {
-									"value": "@activity('GetLastLoadDate').output.resultSets[1].rows[0].LastLoadDate",
+									"value": "@activity('GetLastLoadDate').output.resultSets[0].rows[0].LastLoadDate",
 									"type": "Expression"
 								}
 							}
