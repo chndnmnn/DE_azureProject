@@ -7,13 +7,13 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "GetCDC",
+						"activity": "setCurrentDate",
 						"dependencyConditions": [
 							"Succeeded"
 						]
 					},
 					{
-						"activity": "setCurrentDate",
+						"activity": "SetFromDate",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -31,7 +31,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "SELECT * \nFROM @{pipeline().parameters.db_schema}.@{pipeline().parameters.db_table} \nWHERE @{pipeline().parameters.db_col} > '@{formatDateTime(activity('GetCDC').output.value[0].last_load_date, 'yyyy-MM-dd HH:mm:ss')}'",
+							"value": "SELECT * \nFROM @{pipeline().parameters.db_schema}.@{pipeline().parameters.db_table} \nWHERE @{pipeline().parameters.db_col} > '@{formatDateTime(variables('fromDate'), 'yyyy-MM-dd HH:mm:ss')}'",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -88,52 +88,6 @@
 				]
 			},
 			{
-				"name": "GetCDC",
-				"type": "Lookup",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "JsonSource",
-						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "JsonReadSettings"
-						}
-					},
-					"dataset": {
-						"referenceName": "ds_json_dynamic",
-						"type": "DatasetReference",
-						"parameters": {
-							"container": {
-								"value": "@pipeline().parameters.container",
-								"type": "Expression"
-							},
-							"layer": {
-								"value": "@pipeline().parameters.layer",
-								"type": "Expression"
-							},
-							"jsonPath": {
-								"value": "@concat(pipeline().parameters.source,'/',pipeline().parameters.db_table,'/',pipeline().parameters.db_table,'CDC')",
-								"type": "Expression"
-							},
-							"jsonFile": "cdc.json"
-						}
-					},
-					"firstRowOnly": false
-				}
-			},
-			{
 				"name": "setCurrentDate",
 				"type": "SetVariable",
 				"dependsOn": [],
@@ -145,7 +99,7 @@
 				"typeProperties": {
 					"variableName": "currentDate",
 					"value": {
-						"value": "@formatDateTime(utcNow(), 'yyyyMMddHHss')",
+						"value": "@formatDateTime(utcNow(), 'yyyyMMddHHmmss')",
 						"type": "Expression"
 					}
 				}
@@ -431,6 +385,76 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "GetCDC",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "ds_json_dynamic",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": {
+								"value": "@pipeline().parameters.container",
+								"type": "Expression"
+							},
+							"layer": {
+								"value": "@pipeline().parameters.layer",
+								"type": "Expression"
+							},
+							"jsonPath": {
+								"value": "@concat(pipeline().parameters.source,'/',pipeline().parameters.db_table,'/',pipeline().parameters.db_table,'CDC')",
+								"type": "Expression"
+							},
+							"jsonFile": "cdc.json"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "SetFromDate",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "GetCDC",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "fromDate",
+					"value": {
+						"value": "@if(empty(pipeline().parameters.fromDate),activity('GetCDC').output.value[0].last_load_date,pipeline().parameters.fromDate)",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -457,10 +481,16 @@
 			"source": {
 				"type": "string",
 				"defaultValue": "azSqlDB"
+			},
+			"fromDate": {
+				"type": "string"
 			}
 		},
 		"variables": {
 			"currentDate": {
+				"type": "String"
+			},
+			"fromDate": {
 				"type": "String"
 			}
 		},
