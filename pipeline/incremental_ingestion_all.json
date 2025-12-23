@@ -505,34 +505,69 @@
 				"type": "array",
 				"defaultValue": [
 					{
-						"schema": "dbo",
-						"table": "DimUser",
-						"cdc_col": "updated_at",
-						"from_date": ""
+						"source": {
+							"schema": "dbo",
+							"table": "DimUser",
+							"cdc_col": "updated_at",
+							"from_date": ""
+						},
+						"sink": {
+							"container": "azureproject",
+							"layer": "bronze",
+							"sourceType": "azSqlDB"
+						}
 					},
 					{
-						"schema": "dbo",
-						"table": "DimTrack",
-						"cdc_col": "updated_at",
-						"from_date": ""
+						"source": {
+							"schema": "dbo",
+							"table": "DimTrack",
+							"cdc_col": "updated_at",
+							"from_date": ""
+						},
+						"sink": {
+							"container": "azureproject",
+							"layer": "bronze",
+							"sourceType": "azSqlDB"
+						}
 					},
 					{
-						"schema": "dbo",
-						"table": "DimDate",
-						"cdc_col": "date",
-						"from_date": ""
+						"source": {
+							"schema": "dbo",
+							"table": "DimDate",
+							"cdc_col": "date",
+							"from_date": ""
+						},
+						"sink": {
+							"container": "azureproject",
+							"layer": "bronze",
+							"sourceType": "azSqlDB"
+						}
 					},
 					{
-						"schema": "dbo",
-						"table": "DimArtist",
-						"cdc_col": "updated_at",
-						"from_date": ""
+						"source": {
+							"schema": "dbo",
+							"table": "DimArtist",
+							"cdc_col": "date",
+							"from_date": ""
+						},
+						"sink": {
+							"container": "azureproject",
+							"layer": "bronze",
+							"sourceType": "azSqlDB"
+						}
 					},
 					{
-						"schema": "dbo",
-						"table": "FactStream",
-						"cdc_col": "stream_timestamp",
-						"from_date": ""
+						"source": {
+							"schema": "dbo",
+							"table": "FactStream",
+							"cdc_col": "stream_timestamp",
+							"from_date": ""
+						},
+						"sink": {
+							"container": "azureproject",
+							"layer": "bronze",
+							"sourceType": "azSqlDB"
+						}
 					}
 				]
 			}
