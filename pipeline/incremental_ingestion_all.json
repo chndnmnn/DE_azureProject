@@ -362,15 +362,15 @@
 												"type": "DatasetReference",
 												"parameters": {
 													"container": {
-														"value": "@pipeline().parameters.container",
+														"value": "@item().sink.container",
 														"type": "Expression"
 													},
 													"layer": {
-														"value": "@pipeline().parameters.layer",
+														"value": "@item().sink.layer",
 														"type": "Expression"
 													},
 													"jsonPath": {
-														"value": "@concat(pipeline().parameters.source,'/',pipeline().parameters.db_table,'/',pipeline().parameters.db_table,'CDC')",
+														"value": "@concat(item().sink.sourceType,'/',item().source.table,'/',item().source.table,'CDC')",
 														"type": "Expression"
 													},
 													"jsonFile": "cdc.json"
