@@ -80,19 +80,19 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"container": {
-											"value": "@pipeline().parameters.container",
+											"value": "@item().sink.container",
 											"type": "Expression"
 										},
 										"layer": {
-											"value": "@pipeline().parameters.layer",
+											"value": "@item().sink.layer",
 											"type": "Expression"
 										},
 										"parqPath": {
-											"value": "@concat(pipeline().parameters.source,'/',pipeline().parameters.db_table)",
+											"value": "@concat(item().sink.sourceType,'/',item().source.table)",
 											"type": "Expression"
 										},
 										"parqFile": {
-											"value": "@concat(pipeline().parameters.db_table,'_',variables('currentDate'))",
+											"value": "@concat(item().sink.table,'_',variables('currentDate'))",
 											"type": "Expression"
 										}
 									}
