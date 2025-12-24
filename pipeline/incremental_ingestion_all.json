@@ -241,8 +241,14 @@
 														"value": "@item().sink.layer",
 														"type": "Expression"
 													},
-													"parqPath": "@concat(pipeline().parameters.source,'/',pipeline().parameters.db_table)",
-													"parqFile": "@concat(pipeline().parameters.db_table,'_',variables('currentDate'))"
+													"parqPath": {
+														"value": "@concat(item().sink.sourceType,'/',item().source.table)",
+														"type": "Expression"
+													},
+													"parqFile": {
+														"value": "@concat(item().source.table,'_',variables('currentDate'))",
+														"type": "Expression"
+													}
 												}
 											},
 											"enableLogging": false,
