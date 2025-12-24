@@ -552,7 +552,7 @@
 						"source": {
 							"schema": "dbo",
 							"table": "DimArtist",
-							"cdc_col": "date",
+							"cdc_col": "updated_at",
 							"from_date": ""
 						},
 						"sink": {
