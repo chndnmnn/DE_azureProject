@@ -43,7 +43,7 @@
 								"source": {
 									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "SELECT * \nFROM @{pipeline().parameters.db_schema}.@{pipeline().parameters.db_table} \nWHERE @{pipeline().parameters.db_col} > '@{formatDateTime(variables('fromDate'), 'yyyy-MM-dd HH:mm:ss')}'",
+										"value": "SELECT * \nFROM @{item().source.schema}.@{item().source.table} \nWHERE @{item().source.cdc_col} > '@{formatDateTime(variables('fromDate'), 'yyyy-MM-dd HH:mm:ss')}'",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",
@@ -388,7 +388,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@empty(pipeline().parameters.fromDate)",
+									"value": "@empty(item().source.from_date)",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
@@ -404,7 +404,7 @@
 										"typeProperties": {
 											"variableName": "fromDate",
 											"value": {
-												"value": "@pipeline().parameters.fromDate",
+												"value": "@item().source.from_date",
 												"type": "Expression"
 											}
 										}
