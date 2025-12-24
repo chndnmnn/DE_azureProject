@@ -166,19 +166,19 @@
 												"type": "DatasetReference",
 												"parameters": {
 													"container": {
-														"value": "@pipeline().parameters.container",
+														"value": "@item().sink.container",
 														"type": "Expression"
 													},
 													"layer": {
-														"value": "@pipeline().parameters.layer",
+														"value": "@item().sink.layer",
 														"type": "Expression"
 													},
 													"parqPath": {
-														"value": "@concat(pipeline().parameters.source,'/',pipeline().parameters.db_table)",
+														"value": "@concat(item().sink.sourceType,'/',item().source.table)",
 														"type": "Expression"
 													},
 													"parqFile": {
-														"value": "@concat(pipeline().parameters.db_table,'_',variables('currentDate'))",
+														"value": "@concat(item().source.table,'_',variables('currentDate'))",
 														"type": "Expression"
 													}
 												}
@@ -190,19 +190,19 @@
 												"type": "DatasetReference",
 												"parameters": {
 													"container": {
-														"value": "@pipeline().parameters.container",
+														"value": "@item().sink.container",
 														"type": "Expression"
 													},
 													"layer": {
-														"value": "@pipeline().parameters.layer",
+														"value": "@item().sink.layer",
 														"type": "Expression"
 													},
 													"parqPath": {
-														"value": "@concat(pipeline().parameters.source,'/',pipeline().parameters.db_table,'/','Archive')",
+														"value": "@concat(item().sink.sourceType,'/',item().source.table,'/','Archive')",
 														"type": "Expression"
 													},
 													"parqFile": {
-														"value": "@concat(pipeline().parameters.db_table,'_',variables('currentDate'))",
+														"value": "@concat(item().source.table,'_',variables('currentDate'))",
 														"type": "Expression"
 													}
 												}
@@ -276,7 +276,7 @@
 												{
 													"type": "Query",
 													"text": {
-														"value": "SELECT MAX(@{pipeline().parameters.db_col}) AS LastLoadDate FROM @{pipeline().parameters.db_schema}.@{pipeline().parameters.db_table}",
+														"value": "SELECT MAX(@{item().source.cdc_col}) AS LastLoadDate FROM @{item().source.schema}.@{item().source.table}",
 														"type": "Expression"
 													}
 												}
@@ -341,15 +341,15 @@
 												"type": "DatasetReference",
 												"parameters": {
 													"container": {
-														"value": "@pipeline().parameters.container",
+														"value": "@item().sink.container",
 														"type": "Expression"
 													},
 													"layer": {
-														"value": "@pipeline().parameters.layer",
+														"value": "@item().sink.layer",
 														"type": "Expression"
 													},
 													"jsonPath": {
-														"value": "@concat(pipeline().parameters.source,'/',pipeline().parameters.db_table,'/',pipeline().parameters.db_table,'CDC')",
+														"value": "@concat(item().sink.sourceType,'/',item().source.table,'/',item().source.table,'CDC')",
 														"type": "Expression"
 													},
 													"jsonFile": "empty.json"
