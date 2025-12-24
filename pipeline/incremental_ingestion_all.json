@@ -92,7 +92,7 @@
 											"type": "Expression"
 										},
 										"parqFile": {
-											"value": "@concat(item().sink.table,'_',variables('currentDate'))",
+											"value": "@concat(item().source.table,'_',variables('currentDate'))",
 											"type": "Expression"
 										}
 									}
