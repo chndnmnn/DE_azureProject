@@ -234,11 +234,11 @@
 												"type": "DatasetReference",
 												"parameters": {
 													"container": {
-														"value": "@pipeline().parameters.container",
+														"value": "@item().sink.container",
 														"type": "Expression"
 													},
 													"layer": {
-														"value": "@pipeline().parameters.layer",
+														"value": "@item().sink.layer",
 														"type": "Expression"
 													},
 													"parqPath": "@concat(pipeline().parameters.source,'/',pipeline().parameters.db_table)",
